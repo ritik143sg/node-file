@@ -8,7 +8,14 @@ const server = http.createServer((req, res) => {
   res.setHeader("Content-Type", "text/html");
 
   if (url === "/" && method === "GET") {
-    res.end(`
+    fs.readFile("formValue.txt", (err, value) => {
+      if (err) {
+        res.statusCode = 404;
+        return res.end("<h1>File Not Found</h1>");
+      }
+
+      res.end(`
+      ${value.toString()}
       <form action="/message" method="POST">
         <label for="name">Name: </label>
         <input type="text" id="name" name="name" />
@@ -16,6 +23,7 @@ const server = http.createServer((req, res) => {
       </form>
       <br/>
     `);
+    });
   } else if (url === "/message" && method === "POST") {
     let data = [];
 
